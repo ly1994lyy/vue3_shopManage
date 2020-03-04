@@ -6,6 +6,10 @@ import './assets/css/global.css'
 import './assets/fonts/iconfont.css'
 import axios from 'axios'
 import TreeTable from 'vue-table-with-tree-grid'
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
 axios.defaults.baseURL = 'https://www.liulongbin.top:8888/api/private/v1/'
 
@@ -18,6 +22,7 @@ Vue.prototype.$http = axios
 
 
 Vue.component('tree-table', TreeTable)
+Vue.use(VueQuillEditor)
 
 Vue.filter('dateFormat', (originVal) => {
     const dt = new Date(originVal)

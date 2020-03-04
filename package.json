@@ -11,7 +11,9 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
     "element-ui": "^2.4.5",
+    "lodash": "^4.17.15",
     "vue": "^2.6.11",
+    "vue-quill-editor": "^3.0.6",
     "vue-router": "^3.1.5",
     "vue-table-with-tree-grid": "^0.2.4"
   },

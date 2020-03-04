@@ -40,6 +40,7 @@
           v-model="activeIndex"
           :before-leave="beforTabLeave"
           :tab-position="'left'"
+          @tab-click="tabClicked"
         >
           <el-tab-pane label="基本信息" name="0">
             <el-form-item label="商品名称" prop="goods_name">
@@ -52,7 +53,7 @@
               <el-input v-model="addForm.goods_weight" type="number"></el-input>
             </el-form-item>
             <el-form-item label="商品数量" prop="goods_number">
-              <el-input v-model="addForm.goods_name" type="number"></el-input>
+              <el-input v-model="addForm.goods_number" type="number"></el-input>
             </el-form-item>
             <el-form-item label="商品分类：" prop="goods_cat">
               <el-cascader
@@ -65,17 +66,63 @@
               </el-cascader>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="商品参数" name="1"></el-tab-pane>
-          <el-tab-pane label="商品信息" name="2"></el-tab-pane>
-          <el-tab-pane label="商品图片" name="3"></el-tab-pane>
-          <el-tab-pane label="商品内容" name="4"></el-tab-pane>
+          <el-tab-pane label="商品参数" name="1">
+            <el-form-item
+              :label="item.attr_name"
+              v-for="item in manyTabelData"
+              :key="item.attr_id"
+            >
+              <el-checkbox-group v-model="item.attr_vals">
+                <el-checkbox
+                  :label="cb"
+                  border
+                  v-for="(cb, i) in item.attr_vals"
+                  :key="i"
+                ></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+          </el-tab-pane>
+          <el-tab-pane label="商品属性" name="2">
+            <el-form-item
+              :label="item.attr_name"
+              v-for="item in onlyTabelData"
+              :key="item.attr_id"
+            >
+              <el-input v-model="item.attr_vals"></el-input>
+            </el-form-item>
+          </el-tab-pane>
+          <el-tab-pane label="商品图片" name="3">
+            <el-upload
+              action="https://www.liulongbin.top:8888/api/private/v1/upload"
+              :headers="headerobj"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :on-success="handleSuccess"
+              list-type="picture"
+            >
+              <el-button size="small" type="primary">点击上传</el-button>
+            </el-upload>
+          </el-tab-pane>
+          <el-tab-pane label="商品内容" name="4">
+            <quill-editor v-model="addForm.goods_introduce"></quill-editor>
+            <el-button type="primary" class="btnAdd" @click="add">添加商品</el-button>
+          </el-tab-pane>
         </el-tabs>
       </el-form>
     </el-card>
+
+    <el-dialog
+      title="图片预览"
+      :visible.sync="previewVisible"
+      width="50%">
+      <img :src="previewPath" alt="" class="previewImg">
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import _ from 'lodash'
+
 export default {
   data() {
     return {
@@ -85,7 +132,10 @@ export default {
         goods_price: 0,
         goods_weight: 0,
         goods_number: 0,
-        goods_cat: []
+        goods_cat: [],
+        pics:[],
+        goods_introduce:'',
+        attrs:[]
       },
       addFormRules: {
         goods_name: [
@@ -110,7 +160,14 @@ export default {
         value: "cat_id",
         label: "cat_name",
         children: "children"
-      }
+      },
+      manyTabelData: [],
+      onlyTabelData: [],
+      headerobj:{
+        Authorization:window.sessionStorage.getItem('token')
+      },
+      previewPath:'',
+      previewVisible:false
     };
   },
   methods: {
@@ -128,16 +185,113 @@ export default {
       }
     },
     beforTabLeave(activeName, oldActiveName) {
-      if(oldActiveName==='0'&&this.addForm.goods_cat.length!==3){
-        this.$message.error('请先选择分类！')
-        return false
+      if (oldActiveName === "0" && this.addForm.goods_cat.length !== 3) {
+        this.$message.error("请先选择分类！");
+        return false;
       }
+    },
+    async tabClicked() {
+      if (this.activeIndex === "1") {
+        const { data } = await this.$http.get(
+          `categories/${this.cateId}/attributes`,
+          {
+            params: {
+              sel: "many"
+            }
+          }
+        );
+        if (data.meta.status !== 200) {
+          return this.$message.error(data.meta.msg);
+        }
+        data.data.forEach(item => {
+          item.attr_vals =
+            item.attr_vals.length === 0 ? [] : item.attr_vals.split(" ");
+        });
+        this.manyTabelData = data.data;
+      } else {
+        const { data } = await this.$http.get(
+          `categories/${this.cateId}/attributes`,
+          {
+            params: {
+              sel: "only"
+            }
+          }
+        );
+        if (data.meta.status !== 200) {
+          return this.$message.error(data.meta.msg);
+        }
+        this.onlyTabelData = data.data;
+      }
+    },
+    handlePreview(file) {
+      this.previewPath = file.response.data.url
+      this.previewVisible = true
+    },
+    handleRemove(fire) {
+      console.log(fire);
+      const picPath = fire.response.data.tmp_path
+      const i = this.addForm.pics.findIndex(x=>x.pic===picPath)
+      this.addForm.pics.splice(i,1)
+    },
+    handleSuccess(response) {
+      const picInfo = {pic:response.data.tmp_path}
+      this.addForm.pics.push(picInfo)
+    },
+    add() {
+      this.$refs.addFormRef.validate(async valid=>{
+        if(!valid) {
+          return this.$message.error('请先填写必填项！')
+        }
+        const form = _.cloneDeep(this.addForm)
+        form.goods_cat = form.goods_cat.join(',')
+        this.manyTabelData.forEach(item => {
+          const newInfo = {
+            attr_id:item.attr_id,
+            attr_value:item.attr_vals.join(' ')
+          }
+          this.addForm.attrs.push(newInfo)
+        });
+        this.onlyTabelData.forEach(item => {
+          const newInfo = {
+            attr_id:item.attr_id,
+            attr_value:item.attr_vals
+          }
+          this.addForm.attrs.push(newInfo)
+        });
+        form.attrs = this.addForm.attrs
+        const {data} = await this.$http.post('goods',form)
+        if (data.meta.status !== 201) {
+          return this.$message.error(data.meta.msg);
+        }
+        this.$message.success('添加商品成功！')
+        this.$router.push('/goods')
+      })
     }
   },
   created() {
     this.getCateList();
+  },
+  computed: {
+    cateId() {
+      if (this.addForm.goods_cat.length === 3) {
+        return this.addForm.goods_cat[2];
+      }
+      return null;
+    }
   }
 };
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.el-checkbox {
+  margin: 0 10px 0 0 !important;
+}
+
+.previewImg{
+  width: 100%;
+}
+
+.btnAdd{
+  margin-top: 15px;
+}
+</style>

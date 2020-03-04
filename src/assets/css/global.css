@@ -32,3 +32,7 @@ body,
 .el-step_little {
     font-size: 13px;
 }
+
+.ql-editor {
+    min-height: 300px;
+}
