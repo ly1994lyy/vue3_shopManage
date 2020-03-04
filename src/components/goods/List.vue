@@ -18,10 +18,7 @@
             <el-button
               slot="append"
               icon="el-icon-search"
-              @click="
-                handleCurrentChange(1);
-                getGoodsList;
-              "
+              @click="handleCurrentChange(1);getGoodsList;"
             ></el-button>
           </el-input>
         </el-col>
@@ -123,7 +120,7 @@ export default {
           if (data.meta.status !== 200) {
             return this.$message.error(data.meta.msg);
           }
-          this.getGoodsList()
+          this.getGoodsList();
           this.$message({
             type: "success",
             message: "删除成功!"
@@ -137,7 +134,7 @@ export default {
         });
     },
     goAddPage() {
-      this.$router.push('goods/add')
+      this.$router.push("goods/add");
     }
   },
   created() {
