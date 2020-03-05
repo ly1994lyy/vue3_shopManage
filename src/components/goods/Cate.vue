@@ -197,7 +197,6 @@ export default {
         this.addCateForm.cat_pid = 0;
         this.addCateForm.cat_level = 0;
       }
-      console.log(this.selectKeys);
     },
     addCateDialogClosed() {
       this.$refs.addCateFormRef.resetFields();

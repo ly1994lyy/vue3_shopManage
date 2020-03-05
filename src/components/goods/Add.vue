@@ -228,7 +228,6 @@ export default {
       this.previewVisible = true
     },
     handleRemove(fire) {
-      console.log(fire);
       const picPath = fire.response.data.tmp_path
       const i = this.addForm.pics.findIndex(x=>x.pic===picPath)
       this.addForm.pics.splice(i,1)
