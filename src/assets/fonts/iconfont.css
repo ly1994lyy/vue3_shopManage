@@ -1,10 +1,8 @@
-@font-face {font-family: "iconfont";
-  src: url('iconfont.eot?t=1582787388241'); /* IE9 */
-  src: url('iconfont.eot?t=1582787388241#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAARgAAsAAAAACRAAAAQUAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDSAqEfIQXATYCJAMYCw4ABCAFhG0HXxvUBxFVnOfIfhS4W6OgZLmjouVonSzB/PB/3zmf+s56PT1J5cKFiN4DoC9QPNSPtbf75VTaXRI0ksQbmSF0QklsLsdaDmEiFEtip5/2Z/o76aV5xnmcRimEBOH4n2PGWwvmX9ucMpv2Bjge0IAyLhqjBAvk+AT1hrGbyIO8HghAjCM7JCwiLg0iVIBVBEDqqiuLIUroUStKCYYI9IKDPGIqBBhy47iLAKZ4P09ewyVEwKFRgBslVYSXIehZyEuOsv9MHmVgw1kBKMeAAuwAPJC+QnsHaBC3QzG2/gKPbwBSDJGoz0JejH2x4MWSl9z//yTEwE0whf/ygCBRUNGACMEXSwFAnKgV4AAFmA0EXoxlAwcvFrCBwoslbODhJaeHgFcLB2xWAA4DeMdj7OTk4DMK0keNB1rNYUQi5M9rIOqev9xmvcf+mN0++2+TJbYbdNds0VkAJ5suuX399vibV2/qL9Oeyz3+JvN51uv02U2vvW5nvXZarV2qpaXcKyZD68Xi8WvVIM6bd8hcseaIbo0E4zQxkaTjql7x8tsRJ28aVT4APFsnUUzYQARD60smrGNrx68f2pAvJbJMHkG2lJbMJrQ4u3QOoUUlxQmtWm+9IrGUiDFt+4Ey/DhnStJdM4hswoac4LKMtJDMdP8PdlofVPbYPtp1eaWzeail65zoJVkVlg6/vNysjGIPxJmmxZtu8D/Sys3rl4NlRdbimDmuluahzisv73pku0flgxY9CrdkRwvlJvIjchVZ4ZHAQLHrUrbUVXxkkAUxDAYC7dEAMgEueXSpICoqKQkzCJbKleVHFUEe3t5Qrge98YUIas7txBOW4j3Ke2dIbjU2Gr73PVOmDDby1T19wcnw8wBdNSwISJnHjzJd5mZ/n5Kqirzf52W7FLzAuk1T/WTLx7aXsCWjlo9DHwDg/9HygPoAAGU0KQmCnbz2D1WFf8nv2PHnxK5Chd9X0YQHAPf7J/p5/v9HK7olREhoLPgnBA37eFsEDELe7I2b7ALd4338RGJsjD/BvfYbSrlrHCUMEwIF0sABiqETomLuoZl4gG7oDcbuHI5PbIi2qCPcenEQlt6Q5v6hWPogKuYLzd4fumUUGPuN6TknLvEn3rRgoBhD+IQsYjLIpCO/9IhJXQYSF3mEK4rLQrB0cEqnDkgoQ2xxt2SlasAIV7DnboZlyWCFc4x0lqra9dyxouiZZhFXjZEvAgUUioHQE8hEGDF0uBplvv8IJWqlgFT0tDivkHCy8cHSzKIB4iCnRj2XMt25SawoZcRlhmAVsOetqIRxBmzxvByKqJm0Q9RamwuDTFP5bHpldZdHYAzs6pFRokaLHgOjo7+fVzuUgasKKLEZdeNiyuuJVudZwZTQioD6YTGHGdY1Gg==') format('woff2'),
-  url('iconfont.woff?t=1582787388241') format('woff'),
-  url('iconfont.ttf?t=1582787388241') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
-  url('iconfont.svg?t=1582787388241#iconfont') format('svg'); /* iOS 4.1- */
+@font-face {
+  font-family: "iconfont"; /* Project id 1659835 */
+  src: url('iconfont.woff2?t=1622354236820') format('woff2'),
+       url('iconfont.woff?t=1622354236820') format('woff'),
+       url('iconfont.ttf?t=1622354236820') format('truetype');
 }
 
 .iconfont {

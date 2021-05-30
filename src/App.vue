@@ -1,15 +1,8 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
+  <div id="nav">
+    <router-view/>
   </div>
 </template>
 
-<script>
-
-export default {
-  name: 'app',
-}
-</script>
-
-<style>
+<style lang="scss">
 </style>

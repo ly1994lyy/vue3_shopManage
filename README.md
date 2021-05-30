@@ -1,4 +1,6 @@
-# 基于Vue.js和Element-ui的商城后台管理系统
+# 基于Vue3.0+TS+Element-plus.0的商城后台管理系统
+
+##全新Vue3.0+Element-plus版本，获取老版本Vue2.0版本请切换到vue2_version分支
 
 > ## 1.项目运行：
 - git clone 到本地

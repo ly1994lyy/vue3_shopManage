@@ -3,7 +3,7 @@
     <el-header>
       <div>
         <img src="../assets/logo.png" alt />
-        <span>Vue商城后台管理系统</span>
+        <span>Vue3.0商城后台管理系统</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
@@ -20,13 +20,13 @@
           :collapse-transition="false"
           :default-active="$route.path"
         >
-          <el-submenu :index="item.id+''" v-for="item in menulist" :key="item.id">
-            <template slot="title">
+          <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">
+            <template v-slot:title>
               <i :class="iconObj[item.id]"></i>
               <span>{{item.authName}}</span>
             </template>
             <el-menu-item :index="'/'+subItem.path" v-for="subItem in item.children" :key="subItem.id">
-              <template slot="title">
+              <template v-slot:title>
                 <i class="el-icon-menu"></i>
                 <span>{{subItem.authName}}</span>
               </template>
@@ -41,48 +41,56 @@
   </el-container>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      menulist: [],
-      iconObj: {
-        "125": "iconfont icon-icon_user",
-        "103": "iconfont icon-tijikongjian",
-        "101": "iconfont icon-shangpin",
-        "102": "iconfont icon-danju",
-        "145": "iconfont icon-baobiao"
-      },
-      isCollapse: false,
-    };
-  },
-  methods: {
-    logout() {
-      window.sessionStorage.clear;
-      this.$router.push("/login");
-    },
-    async getMenuList() {
-      const { data } = await this.$http.get("menus");
-      if (data.meta.status === 200) {
-        this.menulist = data.data;
-      } else {
-        this.$message({
-          type: "error",
-          message: data.meta.msg
-        });
-      }
-    },
-    toggleCollapse() {
-      this.isCollapse = !this.isCollapse;
+<script lang="ts">
+import { ref, defineComponent, getCurrentInstance, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { getMenu } from '@/api/home'
+
+export default defineComponent({
+  name: 'Home',
+  setup () {
+    const { ctx } = getCurrentInstance()
+    const menuList = ref([])
+    const iconObj = ref({
+      125: 'iconfont icon-icon_user',
+      103: 'iconfont icon-tijikongjian',
+      101: 'iconfont icon-shangpin',
+      102: 'iconfont icon-danju',
+      145: 'iconfont icon-baobiao'
+    })
+    const isCollapse = ref(false)
+    const router = useRouter()
+
+    const logout = () => {
+      window.sessionStorage.clear()
+      router.push('/login')
     }
-  },
-  created() {
-    this.getMenuList();
+    const getMenuList = async () => {
+      const { data } = await getMenu()
+      if (data.meta.status === 200) {
+        menuList.value = data.data
+      }
+    }
+    const toggleCollapse = () => {
+      isCollapse.value = !isCollapse.value
+    }
+
+    onMounted(() => {
+      getMenuList()
+    })
+    return {
+      menuList,
+      iconObj,
+      isCollapse,
+      logout,
+      toggleCollapse,
+      getMenuList
+    }
   }
-};
+})
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .el-header {
   background-color: #373d41;
   display: flex;
@@ -103,22 +111,18 @@ export default {
     height: 50px;
   }
 }
-
 .el-aside {
   background-color: #333744;
   .el-menu {
     border-right: none;
   }
 }
-
 .el-main {
   background-color: #eaedf1;
 }
-
 .iconfont {
   margin-right: 10px;
 }
-
 .toggle-button {
   background-color: #4a5064;
   font-size: 10px;
