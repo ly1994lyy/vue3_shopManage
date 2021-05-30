@@ -10,7 +10,17 @@ import {
   ElMenuItem,
   ElSubmenu,
   ElMain,
-  ElMessage
+  ElMessage,
+  ElBreadcrumb,
+  ElBreadcrumbItem,
+  ElCard,
+  ElRow,
+  ElCol,
+  ElTable,
+  ElTableColumn,
+  ElSelect,
+  ElDialog,
+  ElPagination
 } from 'element-plus'
 
 export const components = [
@@ -24,7 +34,17 @@ export const components = [
   ElMenu,
   ElMenuItem,
   ElSubmenu,
-  ElMain
+  ElMain,
+  ElBreadcrumb,
+  ElBreadcrumbItem,
+  ElCard,
+  ElRow,
+  ElCol,
+  ElTable,
+  ElTableColumn,
+  ElSelect,
+  ElPagination,
+  ElDialog
 ]
 
 export const plugins = [ElMessage]
