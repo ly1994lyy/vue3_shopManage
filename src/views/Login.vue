@@ -23,21 +23,23 @@
 </template>
 
 <script lang="ts">
-import { getCurrentInstance, defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { loginApi } from '@/api/auth'
 import { loginForm, LoginFormRules } from '@/utils/loginValidate'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   name: 'Login',
   setup () {
-    const { ctx } = getCurrentInstance()
+    const LoginFormRef = ref(null)
     const router = useRouter()
 
     const login = async () => {
-      const { data: res } = await loginApi(ctx.loginForm)
+      const { data: res } = await loginApi(loginForm)
       if (res.meta.status === 200) {
-        ctx.$message({
+        ElMessage({
+          showClose: true,
           message: '登录成功',
           type: 'success'
         })
@@ -47,7 +49,7 @@ export default defineComponent({
     }
 
     const submit = () => {
-      ctx.$refs.LoginFormRef.validate((valid:boolean) => {
+      (LoginFormRef as any).value.validate((valid:boolean) => {
         if (valid) {
           login()
         }
@@ -55,10 +57,11 @@ export default defineComponent({
     }
 
     const resetLoginForm = () => {
-      ctx.$refs.LoginFormRef.resetFields()
+      (LoginFormRef as any).value.resetFields()
     }
 
     return {
+      LoginFormRef,
       loginForm,
       LoginFormRules,
       submit,

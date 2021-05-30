@@ -42,14 +42,14 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, getCurrentInstance, onMounted } from 'vue'
+import { ref, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { getMenu } from '@/api/home'
+import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   name: 'Home',
   setup () {
-    const { ctx } = getCurrentInstance()
     const menuList = ref([])
     const iconObj = ref({
       125: 'iconfont icon-icon_user',
@@ -63,10 +63,15 @@ export default defineComponent({
 
     const logout = () => {
       window.sessionStorage.clear()
+      ElMessage({
+        showClose: true,
+        type: 'success',
+        message: '您已退出登录!'
+      })
       router.push('/login')
     }
     const getMenuList = async () => {
-      const { data } = await getMenu()
+      const { data } = await getMenu({})
       if (data.meta.status === 200) {
         menuList.value = data.data
       }
@@ -75,9 +80,8 @@ export default defineComponent({
       isCollapse.value = !isCollapse.value
     }
 
-    onMounted(() => {
-      getMenuList()
-    })
+    getMenuList()
+
     return {
       menuList,
       iconObj,

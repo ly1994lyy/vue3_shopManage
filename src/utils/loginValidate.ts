@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { reactive } from 'vue'
 
 interface IUser{
   username:string,
@@ -18,12 +18,12 @@ interface IRules{
   }[];
 }
 
-export const loginForm = ref<IUser>({
+export const loginForm = reactive<IUser>({
   username: 'admin',
   password: '123456'
 })
 
-export const LoginFormRules = ref<IRules>({
+export const LoginFormRules = reactive<IRules>({
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' }
   ],
