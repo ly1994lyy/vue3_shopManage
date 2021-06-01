@@ -20,7 +20,9 @@ import {
   ElTableColumn,
   ElSelect,
   ElDialog,
-  ElPagination
+  ElPagination,
+  ElSwitch,
+  ElTooltip
 } from 'element-plus'
 
 export const components = [
@@ -44,7 +46,9 @@ export const components = [
   ElTableColumn,
   ElSelect,
   ElPagination,
-  ElDialog
+  ElDialog,
+  ElSwitch,
+  ElTooltip
 ]
 
 export const plugins = [ElMessage]
