@@ -87,70 +87,19 @@
     </el-card>
 
     <add-user
+      :id="id"
       :addDialogVisible="addDialogVisible"
+      @getUserList="getUserList"
       @closeAddDialog="closeAddDialog">
     </add-user>
-<!--    &lt;!&ndash; 修改用户对话框 &ndash;&gt;-->
-<!--    <el-dialog-->
-<!--      title="修改用户"-->
-<!--      v-model:visible="editDialogVisible"-->
-<!--      width="50%"-->
-<!--      @close="editDialogClosed"-->
-<!--    >-->
-<!--      <el-form-->
-<!--        :model="editUserForm"-->
-<!--        :rules="editUserFormRules"-->
-<!--        ref="editUserFormRef"-->
-<!--        label-width="70px"-->
-<!--        class="demo-ruleForm"-->
-<!--      >-->
-<!--        <el-form-item label="用户名">-->
-<!--          <el-input v-model="editUserForm.username" disabled></el-input>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="邮箱" prop="email">-->
-<!--          <el-input v-model="editUserForm.email"></el-input>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="手机" prop="mobile">-->
-<!--          <el-input v-model="editUserForm.mobile"></el-input>-->
-<!--        </el-form-item>-->
-<!--      </el-form>-->
-<!--      <template #footer>-->
-<!--        <span class="dialog-footer">-->
-<!--          <el-button @click="editDialogVisible = false">取 消</el-button>-->
-<!--        <el-button type="primary" @click="editUser">确 定</el-button>-->
-<!--        </span>-->
 
-<!--      </template>-->
-<!--    </el-dialog>-->
-
-<!--    &lt;!&ndash; 分配角色对话框 &ndash;&gt;-->
-<!--    <el-dialog-->
-<!--      title="分配角色"-->
-<!--      v-model:visible="setRoleDialogVisible"-->
-<!--      @close="setRoleDialogClosed"-->
-<!--      width="50%"-->
-<!--    >-->
-<!--      <div>-->
-<!--        <p>当前的用户:{{ userInfo.username }}</p>-->
-<!--        <p>当前的角色:{{ userInfo.role_name }}</p>-->
-<!--        <p>分配新角色:-->
-<!--          <el-select v-model="selectRoleId" placeholder="请选择新角色">-->
-<!--            <el-option-->
-<!--              v-for="item in rolesList"-->
-<!--              :key="item.id"-->
-<!--              :label="item.roleName"-->
-<!--              :value="item.id">-->
-<!--            </el-option>-->
-<!--          </el-select>-->
-<!--        </p>-->
-<!--      </div>-->
-<!--      <template #footer>-->
-<!--        <el-button @click="setRoleDialogVisible = false">取 消</el-button>-->
-<!--        <el-button type="primary" @click="saveRoleInfo"-->
-<!--        >确 定</el-button-->
-<!--        >-->
-<!--      </template>-->
-<!--    </el-dialog>-->
+    <set-role
+      :id="id"
+      :userInfo="userInfo"
+      :setRoleDialogVisible="setRoleDialogVisible"
+      @closeRoleDialog="closeRoleDialog"
+    >
+    </set-role>
   </div>
 </template>
 
@@ -159,11 +108,13 @@ import { ref, defineComponent } from 'vue'
 import { getUsers, updateUserState, deleteUser } from '@/api/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import AddUser from '@/views/User/AddUser.vue'
+import SetRole from '@/views/User/SetRole.vue'
 
 export default defineComponent({
   name: 'UserList',
   components: {
-    AddUser
+    AddUser,
+    SetRole
   },
   setup () {
     const queryInfo = ref({
@@ -174,6 +125,9 @@ export default defineComponent({
     const userList = ref([])
     const total = ref(0)
     const addDialogVisible = ref(false)
+    const setRoleDialogVisible = ref(false)
+    const id = ref('')
+    const userInfo = ref({})
 
     const getUserList = async () => {
       const { data: res } = await getUsers(queryInfo.value)
@@ -232,6 +186,22 @@ export default defineComponent({
 
     const closeAddDialog = () => {
       addDialogVisible.value = false
+      id.value = ''
+    }
+    const showEditDialog = (rowId:string) => {
+      addDialog()
+      id.value = rowId
+    }
+
+    const setRole = (row:any) => {
+      setRoleDialogVisible.value = true
+      userInfo.value = row
+      id.value = row.id
+    }
+
+    const closeRoleDialog = () => {
+      setRoleDialogVisible.value = false
+      userInfo.value = {}
     }
     getUserList()
 
@@ -240,118 +210,22 @@ export default defineComponent({
       userList,
       total,
       addDialogVisible,
+      setRoleDialogVisible,
+      id,
+      userInfo,
       getUserList,
       handleSizeChange,
       handleCurrentChange,
       userStateChanged,
       delUser,
       addDialog,
-      closeAddDialog
+      closeAddDialog,
+      showEditDialog,
+      setRole,
+      closeRoleDialog
     }
   }
 })
 </script>
-
-<!--<script>-->
-<!--export default {-->
-<!--  data () {-->
-
-<!--    return {-->
-<!--      editDialogVisible: false,-->
-
-<!--      setRoleDialogVisible: false,-->
-
-<!--      editUserForm: {},-->
-<!--      editUserFormRules: {-->
-<!--        email: [-->
-<!--          { required: true, message: '请输入邮箱', trigger: 'blur' },-->
-<!--          { validator: checkEmail, trigger: 'blur' }-->
-<!--        ],-->
-<!--        mobile: [-->
-<!--          { required: true, message: '请输入手机', trigger: 'blur' },-->
-<!--          { validator: checkMobile, trigger: 'blur' }-->
-<!--        ]-->
-<!--      },-->
-<!--      userInfo: '',-->
-<!--      rolesList: [],-->
-<!--      selectRoleId: ''-->
-<!--    }-->
-<!--  },-->
-<!--  methods: {-->
-
-<!--    addDialogClosed () {-->
-<!--      this.$refs.addUserFormRef.resetFields()-->
-<!--    },-->
-<!--    addUser () {-->
-<!--      this.$refs.addUserFormRef.validate(async valid => {-->
-<!--        if (!valid) return-->
-<!--        const { data } = await this.$http.post('users', this.addUserForm)-->
-<!--        if (data.meta.status !== 201) {-->
-<!--          this.$message.error('添加用户失败！')-->
-<!--        }-->
-<!--        this.$message.success('添加用户成功！')-->
-<!--        this.dialogVisible = false-->
-<!--        this.getUserList()-->
-<!--      })-->
-<!--    },-->
-<!--    async showEditDialog (id) {-->
-<!--      const { data } = await this.$http.get(`users/${id}`)-->
-<!--      if (data.meta.status !== 200) {-->
-<!--        this.$message.error('查询用户失败！')-->
-<!--      }-->
-<!--      this.editUserForm = data.data-->
-<!--      this.editDialogVisible = true-->
-<!--    },-->
-<!--    editDialogClosed () {-->
-<!--      this.$refs.editUserFormRef.resetFields()-->
-<!--    },-->
-<!--    editUser () {-->
-<!--      this.$refs.editUserFormRef.validate(async valid => {-->
-<!--        if (!valid) return-->
-<!--        const { data } = await this.$http.put(`users/${this.editUserForm.id}`, {-->
-<!--          email: this.editUserForm.email,-->
-<!--          mobile: this.editUserForm.mobile-->
-<!--        })-->
-<!--        if (data.meta.status !== 200) {-->
-<!--          this.$message.error('修改用户信息失败！')-->
-<!--        }-->
-<!--        this.$message.success('修改成功！')-->
-<!--        this.editDialogVisible = false-->
-<!--        this.getUserList()-->
-<!--      })-->
-<!--    },-->
-<!--    async setRole (userInfo) {-->
-<!--      const { data } = await this.$http.get('roles')-->
-<!--      if (data.meta.status !== 200) {-->
-<!--        return this.$message.error(data.meta.msg)-->
-<!--      }-->
-<!--      this.rolesList = data.data-->
-<!--      this.userInfo = userInfo-->
-<!--      this.setRoleDialogVisible = true-->
-<!--    },-->
-<!--    async saveRoleInfo () {-->
-<!--      if (!this.selectRoleId) {-->
-<!--        return this.$message.error('请选择要分配的角色！')-->
-<!--      }-->
-<!--      const { data } = await this.$http.put(`users/${this.userInfo.id}/role`, {-->
-<!--        rid: this.selectRoleId-->
-<!--      })-->
-<!--      if (data.meta.status !== 200) {-->
-<!--        return this.$message.error(data.meta.msg)-->
-<!--      }-->
-<!--      this.$message.success('分配角色成功！')-->
-<!--      this.getUserList()-->
-<!--      this.setRoleDialogVisible = false-->
-<!--    },-->
-<!--    setRoleDialogClosed () {-->
-<!--      this.selectRoleId = '',-->
-<!--      this.userInfo = {}-->
-<!--    }-->
-<!--  },-->
-<!--  created () {-->
-<!--    this.getUserList()-->
-<!--  }-->
-<!--}-->
-<!--</script>-->
 
 <style lang="scss" scoped></style>

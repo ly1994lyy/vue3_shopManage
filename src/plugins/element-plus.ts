@@ -22,7 +22,8 @@ import {
   ElDialog,
   ElPagination,
   ElSwitch,
-  ElTooltip
+  ElTooltip,
+  ElOption
 } from 'element-plus'
 
 export const components = [
@@ -48,7 +49,8 @@ export const components = [
   ElPagination,
   ElDialog,
   ElSwitch,
-  ElTooltip
+  ElTooltip,
+  ElOption
 ]
 
 export const plugins = [ElMessage]

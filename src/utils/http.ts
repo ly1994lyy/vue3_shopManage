@@ -16,7 +16,7 @@ http.interceptors.request.use((config:AxiosRequestConfig) => {
 
 http.interceptors.response.use((res:AxiosResponse) => {
   const { data } = res
-  if (data.meta.status !== 200) {
+  if (data.meta.status !== 200 && data.meta.status !== 201) {
     ElMessage({
       showClose: true,
       message: data.meta.msg,

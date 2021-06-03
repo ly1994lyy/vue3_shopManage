@@ -1,5 +1,12 @@
 import { ref } from 'vue'
 
+export interface IUser{
+  username?: string;
+  password?: string;
+  email?: string;
+  mobile?: string;
+}
+
 // 自定义邮箱校验规则
 const checkEmail = (rule:any, value:any, cb:any) => {
   const regEail = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/
