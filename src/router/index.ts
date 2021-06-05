@@ -15,6 +15,14 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/users',
         component: () => import('@/views/User/UserList.vue')
+      },
+      {
+        path: '/roles',
+        component: () => import('@/views/Permission/RoleList.vue')
+      },
+      {
+        path: '/rights',
+        component: () => import('@/views/Permission/RightList.vue')
       }
     ]
   },

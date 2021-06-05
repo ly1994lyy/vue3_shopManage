@@ -2,6 +2,7 @@
   <el-dialog
     title="分配角色"
     :model-value="setRoleDialogVisible"
+    :close-on-click-modal="false"
     @close="setRoleDialogClosed"
     width="50%"
   >
