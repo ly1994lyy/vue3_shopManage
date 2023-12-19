@@ -1,8 +1,12 @@
+<script setup>
+</script>
+
 <template>
-  <div id="nav">
-    <router-view/>
+  <div>
+    你好
   </div>
 </template>
 
-<style lang="scss">
+<style scoped>
+
 </style>

@@ -1,0 +1,41 @@
+{
+  "name": "shop",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "body-parser": "~1.18.2",
+    "busboy": "^0.2.14",
+    "config": "^1.28.0",
+    "debug": "~2.6.9",
+    "express": "^4.16.2",
+    "gm": "^1.23.0",
+    "je": "^1.0.2",
+    "jsonwebtoken": "^7.1.9",
+    "lodash": "^4.17.4",
+    "log4js": "^2.4.1",
+    "morgan": "~1.9.0",
+    "mount-routes": "^1.0.8",
+    "multer": "^1.3.0",
+    "mysql": "^2.15.0",
+    "node-orm": "^2.1.15",
+    "node-php-password": "^0.1.2",
+    "orm": "^4.0.1",
+    "passport": "^0.4.0",
+    "passport-http-bearer": "^1.0.1",
+    "passport-local": "^1.0.0",
+    "serve-favicon": "~2.4.5",
+    "underscore": "^1.8.3",
+    "uniqid": "^4.1.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "gulp": "^3.9.1",
+    "mocha": "^4.0.1",
+    "request": "^2.83.0"
+  }
+}
