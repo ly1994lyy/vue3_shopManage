@@ -2,9 +2,7 @@
 </script>
 
 <template>
-  <div>
-    你好
-  </div>
+  <RouterView />
 </template>
 
 <style scoped>
