@@ -55,7 +55,7 @@ const login = async () => {
       message: '登录成功',
       type: 'success'
     })
-    window.sessionStorage.setItem('token', resInfo.value.data.token)
+    window.sessionStorage.setItem('token', resInfo.value.token)
     await router.push('/home')
   }
 }

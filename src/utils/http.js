@@ -23,7 +23,7 @@ http.interceptors.response.use(res => {
       type: 'error'
     })
   }
-  return res
+  return res.data
 }, error => {
   return Promise.reject(error)
 })

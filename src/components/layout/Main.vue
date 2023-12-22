@@ -67,9 +67,9 @@ const logout = () => {
   router.push('/login')
 }
 const getMenuList = async () => {
-  const { data } = await getMenu({})
-  if (data.meta.status === 200) {
-    menuList.value = data.data
+  const res = await getMenu({})
+  if (res.meta.status === 200) {
+    menuList.value = res.data
   }
 }
 const toggleCollapse = () => {

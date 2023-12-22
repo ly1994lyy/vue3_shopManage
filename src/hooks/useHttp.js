@@ -18,8 +18,12 @@ const useHttp = (http, isResObj) => {
       if (isResObj) {
         resInfo.value = res.data
       } else {
-        tableData.value = res.data.data[keyName]
-        total.value = Number(res.data.data.total)
+        if (keyName) {
+          tableData.value = res.data[keyName]
+        } else {
+          tableData.value = res.data
+        }
+        total.value = Number(res.data.total)
       }
     } catch (e) {
       console.log(e)

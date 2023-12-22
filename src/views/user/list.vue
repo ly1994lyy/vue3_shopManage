@@ -16,7 +16,7 @@
           >
             <template #append>
               <el-button
-                  icon="el-icon-search"
+                  :icon="Search"
                   @click="getUserList"
               ></el-button>
             </template>
@@ -28,8 +28,8 @@
           >
         </el-col>
       </el-row>
-      <el-table :data="tableData" v-loading="loading" border stripe style="width: 100%">
-        <el-table-column align="center" type="index"></el-table-column>
+      <el-table :data="tableData" v-loading="loading" stripe style="width: 100%">
+        <el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
         <el-table-column align="center" prop="username" label="姓名"></el-table-column>
         <el-table-column align="center" prop="email" label="邮箱"></el-table-column>
         <el-table-column align="center" prop="mobile" label="电话"></el-table-column>
@@ -107,7 +107,7 @@
 import { deleteUser, getUsers, updateUserState } from '@/apis/user.js'
 import { ref } from 'vue'
 import useHttp from '@/hooks/useHttp.js'
-import { Delete, Edit, Setting } from '@element-plus/icons-vue'
+import { Delete, Edit, Setting, Search } from '@element-plus/icons-vue'
 import AddUser from '@/components/user/AddUser.vue'
 
 const queryInfo = ref({
