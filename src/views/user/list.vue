@@ -150,12 +150,12 @@ const delUser = (id) => {
     confirmButtonText: '确定',
     cancelButtonText: '取消'
   }).then(async () => {
-    const { data } = await deleteUser(id)
-    if (data.meta.status === 200) {
+    const res = await deleteUser(id)
+    if (res.meta.status === 200) {
       ElMessage({
         type: 'success',
         showClose: true,
-        message: data.meta.msg
+        message: res.meta.msg
       })
       await getUserList()
     }
