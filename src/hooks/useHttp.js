@@ -16,7 +16,7 @@ const useHttp = (http, isResObj) => {
         res = await http()
       }
       if (isResObj) {
-        resInfo.value = res.data
+        resInfo.value = res
       } else {
         if (keyName) {
           tableData.value = res.data[keyName]

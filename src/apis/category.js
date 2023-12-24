@@ -20,6 +20,10 @@ export const getCategoryParams = (id, params) => {
   return get(`categories/${id}/attributes`, params)
 }
 
+export const updateCategoryParams = (cateId, attrId, params) => {
+  return update(`categories/${cateId}/attributes/${attrId}`, params)
+}
+
 export const updateCategoryApi = (id, data) => {
   return update(`/categories/${id}`, data)
 }

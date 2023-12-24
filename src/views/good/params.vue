@@ -55,7 +55,7 @@
                     v-model="scope.row.inputValue"
                     ref="saveTagInput"
                     size="small"
-                    @keyup.enter.native="handleInputConfirm(scope.row)"
+                    @keyup.enter="handleInputConfirm(scope.row)"
                     @blur="handleInputConfirm(scope.row)"
                 >
                 </el-input>
@@ -68,7 +68,7 @@
                 >
               </template>
             </el-table-column>
-            <el-table-column type="index"> </el-table-column>
+            <el-table-column type="index" label="序号" width="60"> </el-table-column>
             <el-table-column prop="attr_name" label="参数名称" width="width">
             </el-table-column>
             <el-table-column label="操作">
@@ -117,7 +117,7 @@
                     v-model="scope.row.inputValue"
                     ref="saveTagInput"
                     size="small"
-                    @keyup.enter.native="handleInputConfirm(scope.row)"
+                    @keyup.enter="handleInputConfirm(scope.row)"
                     @blur="handleInputConfirm(scope.row)"
                 >
                 </el-input>
@@ -130,7 +130,7 @@
                 >
               </template>
             </el-table-column>
-            <el-table-column type="index"> </el-table-column>
+            <el-table-column type="index" label="序号" width="60"> </el-table-column>
             <el-table-column prop="attr_name" label="属性名称" width="width">
             </el-table-column>
             <el-table-column label="操作">
@@ -206,9 +206,10 @@
 
 <script setup>
 import useHttp from '@/hooks/useHttp.js'
-import { getCategories, getCategoryParams } from '@/apis/category.js'
-import { ref, computed } from 'vue'
+import { getCategories, getCategoryParams, updateCategoryParams } from '@/apis/category.js'
+import { ref, computed, nextTick } from 'vue'
 import { Edit, Delete } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 
 const { tableData, queryData } = useHttp(getCategories)
 
@@ -225,6 +226,9 @@ const onlyTableData = ref([])
 const addDialogVisible = ref(false)
 const editDialogVisible = ref(false)
 
+const inputVisible = ref(false)
+const InputRef = ref(null)
+
 const cateId = computed(() => selectCateKeys.value.length === 3 ? selectCateKeys.value[2] : null)
 const isBtnDisabled = computed(() => selectCateKeys.value.length !== 3)
 
@@ -237,11 +241,6 @@ const getParamsData = async () => {
     return
   }
   const res = await getCategoryParams(cateId.value, { sel: activeName.value })
-  if (res.meta.status !== 200) {
-    ElMessage.error(res.meta.msg)
-    return
-  }
-  console.log(res)
   res.data.forEach(item => {
     item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') : []
     // 每一行控制是否按钮和文本框输入
@@ -258,6 +257,43 @@ const getParamsData = async () => {
 const handleTabClick = (tab) => {
   activeName.value = tab.props.name
   getParamsData()
+}
+
+const setAttrVals = async (row) => {
+  await updateCategoryParams(
+    cateId.value,
+    row.attr_id,
+    {
+      attr_name: row.attr_name,
+      attr_sel: row.attr_sel,
+      attr_vals: row.attr_vals.join(' ')
+    })
+  ElMessage.success('修改成功！')
+}
+
+const handleClosed = (i, row) => {
+  row.attr_vals.splice(i, 1)
+  setAttrVals(row)
+}
+
+const showInput = (row) => {
+  row.inputVisible = true
+  // 文本框自动获得焦点
+  nextTick(() => {
+    InputRef.value.input.focus()
+  })
+}
+
+const handleInputConfirm = (row) => {
+  if (row.inputValue.trim().length === 0) {
+    row.inputValue = ''
+    row.inputVisible = false
+    return
+  }
+  row.attr_vals.push(row.inputValue.trim())
+  row.inputValue = ''
+  row.inputVisible = false
+  setAttrVals(row)
 }
 
 const showAddDialog = () => {
