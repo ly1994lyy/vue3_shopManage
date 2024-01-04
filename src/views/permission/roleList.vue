@@ -50,43 +50,64 @@
       </el-table>
     </el-card>
 
-    <!-- 分配权限对话框 -->
-    <el-dialog
-        title="分配权限"
-        v-model:visible="setRightDialogVisible"
-        @close="setRightDialogClosed"
-        width="50%"
-    >
-      <el-tree
-          :data="rightslist"
-          :default-checked-keys="defKeys"
-          node-key="id"
-          ref="treeRef"
-          default-expand-all
-          show-checkbox
-          :props="treeProps">
-      </el-tree>
-      <div slot="footer">
-        <el-button @click="setRightDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="allotRights">确 定</el-button>
-      </div>
-    </el-dialog>
+    <SetRight
+        :rights-list="rowRights"
+        :role-id="roleId"
+        :defKeys="defKeys"
+        @clearDefKeys="clearDefKeys"
+        @getRightsList="getRightsList"
+        v-model="visible"
+        v-if="visible"
+    />
+
   </div>
 </template>
 
 <script setup>
-import { getRoles } from '@/apis/permission.js'
+import { getRoles, getRights, deleteRole } from '@/apis/permission.js'
 import useHttp from '@/hooks/useHttp.js'
 import { Edit, Setting, Delete } from '@element-plus/icons-vue'
+import SetRight from '@/components/permission/SetRight.vue'
+import { ref } from 'vue'
 
 const { loading, tableData, queryData } = useHttp(getRoles)
 
+const visible = ref(false)
+const rowRights = ref([])
+const defKeys = ref([])
+const roleId = ref(0)
 const getRightsList = async () => {
   await queryData()
 }
 
-const removeRightById = (row, id) => {
+const showSetRightDialog = async (row) => {
+  roleId.value = row.id
+  const res = await getRights()
+  rowRights.value = res.data
+  getLeafKeys(row, defKeys.value)
+  visible.value = true
+}
 
+const clearDefKeys = () => {
+  defKeys.value = []
+}
+const getLeafKeys = (node, arr) => {
+  if (!node.children) {
+    return arr.push(node.id)
+  }
+  node.children.forEach(item => getLeafKeys(item, arr))
+}
+const removeRightById = (row, id) => {
+  ElMessageBox.confirm('此操作将永久删除该权限, 是否继续?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消'
+  }).then(async () => {
+    await deleteRole(row.id, id)
+    ElMessage.success('删除成功')
+    await getRightsList()
+  }).catch(() => {
+    ElMessage.info('取消删除')
+  })
 }
 getRightsList()
 </script>

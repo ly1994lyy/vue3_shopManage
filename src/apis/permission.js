@@ -12,6 +12,10 @@ export const getRightsApi = () => {
   return get('rights/list', '')
 }
 
+export const setRoleApi = (roleId, params) => {
+  return post(`roles/${roleId}/rights`, params)
+}
+
 export const deleteRole = (id, rightId) => {
   return del(`roles/${id}/rights/${rightId}`)
 }

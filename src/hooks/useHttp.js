@@ -23,7 +23,7 @@ const useHttp = (http, isResObj) => {
         } else {
           tableData.value = res.data
         }
-        total.value = Number(res.data.total)
+        total.value = Number(res.data.total) || 0
       }
     } catch (e) {
       console.log(e)
