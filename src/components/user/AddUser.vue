@@ -1,7 +1,7 @@
 <template>
   <el-dialog
       :title="title"
-      :model-value="props.modelValue"
+      :model-value="modelValue"
       :close-on-click-modal="false"
       width="50%"
       destroy-on-close
@@ -119,24 +119,21 @@ const addUser = () => {
           email: addUserForm.value.email,
           mobile: addUserForm.value.mobile
         }
-        const { data } = await updateUserApi(props.id, params)
-        if (data.meta.status === 200) {
-          ElMessage({
-            type: 'success',
-            message: data.meta.msg,
-            showClose: true
-          })
-        }
+        const res = await updateUserApi(props.id, params)
+        ElMessage({
+          type: 'success',
+          message: res.meta.msg,
+          showClose: true
+        })
       } else {
         params = addUserForm.value
-        const { data } = await addUserApi(params)
-        if (data.meta.status === 201) {
-          ElMessage({
-            type: 'success',
-            message: data.meta.msg,
-            showClose: true
-          })
-        }
+        const res = await addUserApi(params)
+
+        ElMessage({
+          type: 'success',
+          message: res.meta.msg,
+          showClose: true
+        })
       }
       addUserFormRef.value.resetFields()
       emits('update:modelValue', false)
