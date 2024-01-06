@@ -7,3 +7,7 @@ export const getOrders = (data) => {
 export const getProgressInfoApi = () => {
   return get('/kuaidi/JT5241813716835')
 }
+
+export const getReport = () => {
+  return get('/reports/type/1')
+}
