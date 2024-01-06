@@ -39,6 +39,11 @@ const routes = [
         path: '/params',
         name: 'params',
         component: () => import('@/views/good/params.vue')
+      },
+      {
+        path: '/orders',
+        name: 'orders',
+        component: () => import('@/views/order/index.vue')
       }
     ]
   }
