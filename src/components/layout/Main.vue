@@ -3,21 +3,18 @@
     <el-header>
       <div>
         <img src="../../assets/logo.png" alt />
-        <span>Vue3.0商城后台管理系统</span>
+        <span>Vue3商城后台管理系统</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
     <el-container>
-      <el-aside :width="isCollapse ? '64px' : '200px'">
-        <div class="toggle-button" @click="toggleCollapse">|||</div>
+      <el-aside>
         <el-menu
             router
             background-color="#333744"
             text-color="#fff"
             active-text-color="#409EFF"
             unique-opened
-            :collapse="isCollapse"
-            :collapse-transition="false"
             :default-active="$route.path"
         >
           <el-sub-menu :index="item.id+''" v-for="item in menuList" :key="item.id">
@@ -45,6 +42,7 @@
 import { useRouter } from 'vue-router'
 import { getMenu } from '@/apis/auth.js'
 import { ref } from 'vue'
+import { Position } from '@element-plus/icons-vue'
 
 const menuList = ref([])
 const iconObj = ref({
@@ -54,7 +52,6 @@ const iconObj = ref({
   102: 'iconfont icon-danju',
   145: 'iconfont icon-baobiao'
 })
-const isCollapse = ref(false)
 const router = useRouter()
 
 const logout = () => {
@@ -72,9 +69,6 @@ const getMenuList = async () => {
     menuList.value = res.data
   }
 }
-const toggleCollapse = () => {
-  isCollapse.value = !isCollapse.value
-}
 
 getMenuList()
 </script>
@@ -82,6 +76,7 @@ getMenuList()
 <style lang="scss" scoped>
 .el-header {
   background-color: #373d41;
+  position: relative;
   display: flex;
   justify-content: space-between;
   padding-left: 0;
@@ -101,12 +96,21 @@ getMenuList()
   }
 }
 .el-aside {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  top: 60px;
   background-color: #333744;
   .el-menu {
     border-right: none;
   }
 }
 .el-main {
+  position: absolute;
+  left: 200px;
+  right: 0;
+  bottom: 0;
+  top: 60px;
   background-color: #eaedf1;
 }
 .iconfont {
