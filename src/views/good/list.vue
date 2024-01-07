@@ -86,8 +86,10 @@ import useHttp from '@/hooks/useHttp.js'
 import { deleteGood, getGoods } from '@/apis/good.js'
 import { ref } from 'vue'
 import { Edit, Delete, Search } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
 
 const { loading, tableData, queryData, total } = useHttp(getGoods)
+const router = useRouter()
 
 const queryInfo = ref({
   query: '',
@@ -96,7 +98,7 @@ const queryInfo = ref({
 })
 
 const goAddPage = () => {
-
+  router.push({ name: 'addGood' })
 }
 
 const removeById = (id) => {
@@ -105,14 +107,12 @@ const removeById = (id) => {
     cancelButtonText: '取消'
   }).then(async () => {
     const res = await deleteGood(id)
-    if (res.meta.status === 200) {
-      ElMessage({
-        type: 'success',
-        showClose: true,
-        message: res.meta.msg
-      })
-      await getGoodsList()
-    }
+    ElMessage({
+      type: 'success',
+      showClose: true,
+      message: res.meta.msg
+    })
+    await getGoodsList()
   }).catch(() => {
     ElMessage({
       type: 'info',
