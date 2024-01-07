@@ -93,13 +93,14 @@
         @getUserList="getUserList"
     />
 
-    <set-role
+    <SetRole
         :id="id"
         :userInfo="userInfo"
-        :setRoleDialogVisible="setRoleDialogVisible"
-        @closeRoleDialog="closeRoleDialog"
+        v-if="setRoleDialogVisible"
+        v-model="setRoleDialogVisible"
+        @getUserList="getUserList"
     >
-    </set-role>
+    </SetRole>
   </div>
 </template>
 
@@ -109,6 +110,7 @@ import { ref } from 'vue'
 import useHttp from '@/hooks/useHttp.js'
 import { Delete, Edit, Setting, Search } from '@element-plus/icons-vue'
 import AddUser from '@/components/user/AddUser.vue'
+import SetRole from '@/components/user/SetRole.vue'
 
 const queryInfo = ref({
   query: '',
@@ -135,14 +137,12 @@ const handleCurrentChange = (newPage) => {
 }
 
 const userStateChanged = async (userinfo) => {
-  const { data } = await updateUserState(userinfo.id, userinfo.mg_state)
-  if (data.meta.status === 200) {
-    ElMessage({
-      type: 'success',
-      showClose: true,
-      message: data.meta.msg
-    })
-  }
+  const res = await updateUserState(userinfo.id, userinfo.mg_state)
+  ElMessage({
+    type: 'success',
+    showClose: true,
+    message: res.meta.msg
+  })
 }
 
 const delUser = (id) => {
@@ -151,14 +151,12 @@ const delUser = (id) => {
     cancelButtonText: '取消'
   }).then(async () => {
     const res = await deleteUser(id)
-    if (res.meta.status === 200) {
-      ElMessage({
-        type: 'success',
-        showClose: true,
-        message: res.meta.msg
-      })
-      await getUserList()
-    }
+    ElMessage({
+      type: 'success',
+      showClose: true,
+      message: res.meta.msg
+    })
+    await getUserList()
   }).catch(() => {
     ElMessage({
       type: 'info',
@@ -184,10 +182,6 @@ const setRole = (row) => {
   id.value = row.id
 }
 
-const closeRoleDialog = () => {
-  setRoleDialogVisible.value = false
-  userInfo.value = {}
-}
 getUserList()
 </script>
 

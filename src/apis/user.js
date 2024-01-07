@@ -24,10 +24,6 @@ export const updateUserApi = (id, data) => {
   return update(`/users/${id}`, data)
 }
 
-export const getRoles = () => {
-  return get('roles', '')
-}
-
 export const setRole = (id, data) => {
   return update(`users/${id}/role`, data)
 }
