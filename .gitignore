@@ -7,9 +7,20 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+.pnpm-store
+
+# Build output
 dist
 dist-ssr
+coverage
+.turbo
+
+# Environment
+.env
+.env.*
+!.env.example
 *.local
 
 # Editor directories and files
@@ -23,4 +34,17 @@ dist-ssr
 *.sln
 *.sw?
 
-yarn.lock
+# TypeScript compiled files
+**/*.vue.js
+**/*.ts.js
+**/*.tsx.js
+**/*.js
+
+# Source code compilation artifacts (should not exist in src directories)
+**/src/**/*.vue.js
+**/src/**/*.ts.js
+**/src/**/*.tsx.js
+**/src/**/*.js
+!**/src/locales/**/*.js
+!**/src/main.js
+!**/src/env.d.ts

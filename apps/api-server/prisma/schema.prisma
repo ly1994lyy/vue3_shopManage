@@ -1,0 +1,398 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum TenantStatus {
+  pending
+  active
+  disabled
+  expired
+}
+
+enum UserType {
+  platform
+  tenant
+  customer
+}
+
+enum UserStatus {
+  active
+  disabled
+}
+
+enum RoleScope {
+  platform
+  tenant
+}
+
+enum PermissionType {
+  menu
+  page
+  button
+  api
+  data
+}
+
+model Tenant {
+  id        String       @id @default(cuid())
+  name      String
+  code      String       @unique
+  status    TenantStatus @default(pending)
+  contact   String?
+  phone     String?
+  email     String?
+  plan      String       @default("starter")
+  expiredAt DateTime?    @map("expired_at")
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  users   User[]
+  roles   Role[]
+  orders  Order[]
+
+  @@map("tenants")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  tenantId  String?    @map("tenant_id")
+  account   String     @unique
+  password  String
+  name      String
+  email     String?
+  phone     String?
+  type      UserType   @default(tenant)
+  status    UserStatus @default(active)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+
+  tenant    Tenant?    @relation(fields: [tenantId], references: [id])
+  userRoles UserRole[]
+  loginLogs LoginLog[]
+  orders    Order[]
+
+  @@index([tenantId])
+  @@map("users")
+}
+
+model Role {
+  id          String    @id @default(cuid())
+  tenantId    String?   @map("tenant_id")
+  name        String
+  code        String
+  description String?
+  scope       RoleScope @default(tenant)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  tenant          Tenant?          @relation(fields: [tenantId], references: [id])
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("roles")
+}
+
+model Permission {
+  id          String         @id @default(cuid())
+  name        String
+  code        String         @unique
+  type        PermissionType
+  parentId    String?        @map("parent_id")
+  description String?
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model UserRole {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  roleId    String   @map("role_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  id           String   @id @default(cuid())
+  roleId       String   @map("role_id")
+  permissionId String   @map("permission_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+enum ProductStatus {
+  draft
+  on_sale
+  off_sale
+  archived
+}
+
+model ProductCategory {
+  id        String   @id @default(cuid())
+  tenantId  String   @map("tenant_id")
+  parentId  String?  @map("parent_id")
+  name      String
+  sort      Int      @default(0)
+  status    String   @default("active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  parent   ProductCategory?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children ProductCategory[] @relation("CategoryTree")
+  products Product[]
+
+  @@index([tenantId])
+  @@index([parentId])
+  @@map("product_categories")
+}
+
+model Product {
+  id          String        @id @default(cuid())
+  tenantId    String        @map("tenant_id")
+  categoryId  String?       @map("category_id")
+  brandId     String?       @map("brand_id")
+  name        String
+  code        String
+  brief       String?
+  description String?       @db.Text
+  price       Decimal       @default(0) @db.Decimal(12, 2)
+  costPrice   Decimal?      @map("cost_price") @db.Decimal(12, 2)
+  stock       Int           @default(0)
+  weight      Decimal?      @db.Decimal(10, 3)
+  cover       String?
+  images      String?       @db.Text
+  tags        String?
+  status      ProductStatus @default(draft)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  category   ProductCategory? @relation(fields: [categoryId], references: [id])
+  orderItems OrderItem[]
+  skus       ProductSku[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@index([categoryId])
+  @@map("products")
+}
+
+model ProductSku {
+  id          String   @id @default(cuid())
+  productId   String   @map("product_id")
+  skuCode     String   @map("sku_code")
+  name        String
+  price       Decimal  @db.Decimal(12, 2)
+  costPrice   Decimal? @map("cost_price") @db.Decimal(12, 2)
+  stock       Int      @default(0)
+  weight      Decimal? @db.Decimal(10, 3)
+  attributes  String?  @db.Text
+  status      String   @default("active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, skuCode])
+  @@index([productId])
+  @@map("product_skus")
+}
+
+model OperationLog {
+  id        String   @id @default(cuid())
+  tenantId  String?  @map("tenant_id")
+  userId    String?  @map("user_id")
+  account   String?
+  module    String
+  action    String
+  /// 业务对象 id（被操作资源），可空
+  targetId  String?  @map("target_id")
+  method    String?
+  path      String?
+  ip        String?
+  userAgent String?  @map("user_agent") @db.VarChar(500)
+  /// 请求摘要：JSON 字符串，仅保留有限字段，避免存敏感数据
+  payload   String?  @db.Text
+  /// 失败时的错误消息
+  message   String?  @db.VarChar(500)
+  result    String   @default("success")
+  /// 接口耗时（毫秒）
+  durationMs Int?    @map("duration_ms")
+  requestId String?  @map("request_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([tenantId])
+  @@index([userId])
+  @@index([module])
+  @@index([createdAt])
+  @@map("operation_logs")
+}
+
+model LoginLog {
+  id        String   @id @default(cuid())
+  tenantId  String?  @map("tenant_id")
+  userId    String?  @map("user_id")
+  account   String
+  ip        String?
+  userAgent String?  @map("user_agent") @db.VarChar(500)
+  /// 失败原因（success 时为空）
+  message   String?  @db.VarChar(500)
+  result    String   @default("success")
+  requestId String?  @map("request_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([tenantId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("login_logs")
+}
+
+// ==================== 订单模块 ====================
+
+enum OrderStatus {
+  pending      // 待支付
+  paid         // 已支付
+  shipped      // 已发货
+  completed    // 已完成
+  cancelled    // 已取消
+  refunded     // 已退款
+}
+
+enum PaymentStatus {
+  unpaid    // 未支付
+  paid      // 已支付
+  refunding // 退款中
+  refunded  // 已退款
+}
+
+enum ShippingStatus {
+  unshipped   // 未发货
+  shipped     // 已发货
+  delivered   // 已签收
+}
+
+model Order {
+  id            String        @id @default(cuid())
+  orderNo       String        @unique @map("order_no")
+  tenantId      String        @map("tenant_id")
+  userId        String        @map("user_id")
+  status        OrderStatus   @default(pending)
+  paymentStatus PaymentStatus @default(unpaid) @map("payment_status")
+  shippingStatus ShippingStatus @default(unshipped) @map("shipping_status")
+
+  // 金额信息
+  subtotal      Decimal       @default(0) @db.Decimal(12, 2)
+  shippingFee   Decimal       @default(0) @map("shipping_fee") @db.Decimal(10, 2)
+  discount      Decimal       @default(0) @db.Decimal(12, 2)
+  totalAmount   Decimal       @map("total_amount") @db.Decimal(12, 2)
+
+  // 收货信息
+  receiverName  String        @map("receiver_name")
+  receiverPhone String        @map("receiver_phone")
+  receiverAddress String      @map("receiver_address")
+
+  // 时间信息
+  paidAt        DateTime?     @map("paid_at")
+  shippedAt     DateTime?     @map("shipped_at")
+  completedAt   DateTime?     @map("completed_at")
+  cancelledAt   DateTime?     @map("cancelled_at")
+
+  remark        String?
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  // 关联
+  tenant        Tenant        @relation(fields: [tenantId], references: [id])
+  user          User          @relation(fields: [userId], references: [id])
+  items         OrderItem[]
+  payments      OrderPayment[]
+  deliveries    OrderDelivery[]
+
+  @@index([tenantId])
+  @@index([userId])
+  @@index([orderNo])
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String  @map("order_id")
+  productId String  @map("product_id")
+  skuId     String? @map("sku_id")
+
+  // 快照信息（下单时的商品信息）
+  productName String  @map("product_name")
+  productCode String  @map("product_code")
+  skuName     String? @map("sku_name")
+  cover       String?
+
+  // 数量和价格
+  quantity    Int
+  price       Decimal @db.Decimal(12, 2)
+  subtotal    Decimal @db.Decimal(12, 2)
+
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // 关联
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+model OrderPayment {
+  id          String   @id @default(cuid())
+  orderId     String   @map("order_id")
+  amount      Decimal  @db.Decimal(12, 2)
+  method      String   // 支付方式：alipay, wechat, bank_transfer 等
+  tradeNo     String?  @map("trade_no") // 第三方交易号
+  status      String   @default("pending")
+  paidAt      DateTime? @map("paid_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@map("order_payments")
+}
+
+model OrderDelivery {
+  id            String   @id @default(cuid())
+  orderId       String   @map("order_id")
+  company       String   // 物流公司
+  trackingNo    String   @map("tracking_no") // 快递单号
+  status        String   @default("pending")
+  shippedAt     DateTime? @map("shipped_at")
+  deliveredAt   DateTime? @map("delivered_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@map("order_deliveries")
+}

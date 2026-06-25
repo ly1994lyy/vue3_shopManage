@@ -1,34 +1,24 @@
 {
-  "name": "demo",
+  "name": "shop-saas",
+  "version": "0.1.0",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "description": "Full-stack multi-tenant commerce SaaS monorepo.",
+  "packageManager": "pnpm@9.15.4",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@element-plus/icons-vue": "^2.3.1",
-    "axios": "^1.6.2",
-    "echarts": "^5.4.3",
-    "element-plus": "^2.4.4",
-    "vue": "^3.3.11",
-    "vue-router": "^4.2.5"
+    "dev": "turbo dev --parallel",
+    "dev:admin": "pnpm --filter @shop-saas/admin-web dev",
+    "dev:server": "pnpm --filter @shop-saas/api-server dev",
+    "build": "turbo build",
+    "build:admin": "pnpm --filter @shop-saas/admin-web build",
+    "build:server": "pnpm --filter @shop-saas/api-server build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "format": "prettier --write ."
   },
   "devDependencies": {
-    "@types/node": "^20.10.5",
-    "@vitejs/plugin-vue": "^4.5.2",
-    "eslint": "^8.0.1",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.25.2",
-    "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
-    "eslint-plugin-promise": "^6.0.0",
-    "eslint-plugin-vue": "^9.19.2",
-    "lodash": "^4.17.21",
-    "sass": "^1.69.5",
-    "unplugin-auto-import": "^0.17.2",
-    "unplugin-vue-components": "^0.26.0",
-    "vite": "^5.0.8"
+    "@shop-saas/config": "workspace:*",
+    "prettier": "^3.3.3",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
   }
 }
