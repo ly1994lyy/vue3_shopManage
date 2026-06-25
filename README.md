@@ -1,106 +1,135 @@
-# 基于Vue.js和Element-ui的商城后台管理系统
+# Shop SaaS
 
-## 该项目即将使用ai升级重构成全栈+多端+多角色多租户系统，敬请期待
+面向全栈、多端、多角色、多租户场景重构的商城 SaaS 项目。
 
-> ## 1.项目运行：
-- git clone 到本地
-- 前端代码: 到 vue3_shopmanage目录下运行,服务端代码: 进入server目录下运行:
+当前仓库已经从旧版 Vue3 商城后台重构为 monorepo 起步结构，旧代码不再作为实现基础。后续开发以 `docs/requirements-upgrade.md` 和 `docs/technical-architecture.md` 为准。
 
+## 技术栈
+
+### Monorepo
+
+- pnpm workspace
+- Turborepo
+- TypeScript
+
+### PC 管理后台
+
+- Vite
+- Vue 3
+- TypeScript
+- Tailwind CSS
+- Naive UI
+- Pinia
+- Vue Router
+
+### 后端服务
+
+- NestJS
+- TypeScript
+- Swagger / OpenAPI
+- MySQL，规划
+- Prisma，规划
+
+## 目录结构
+
+```text
+apps
+├── admin-web       # PC 管理后台
+└── api-server      # NestJS API 服务
+
+packages
+├── api-client      # 请求 SDK
+├── auth            # 认证与权限辅助
+├── config          # 工程共享配置
+├── constants       # 常量与枚举
+├── shared          # 通用工具函数
+└── types           # 共享类型
+
+docs                 # 需求、架构与设计文档
 ```
-npm install 或者 yarn
+
+## 开发命令
+
+安装依赖：
+
+```bash
+pnpm install
 ```
-- 运行：
 
+启动全部开发服务：
+
+```bash
+pnpm dev
 ```
-npm run dev 或者yarn dev
+
+只启动 PC 管理后台：
+
+```bash
+pnpm dev:admin
 ```
-- 浏览器打开 http://localhost:8080/ 
-> ## 2.项目功能（多图）
-### 1.登录&登出&欢迎（默认用户&密码：admin,123456）
-- [x] 登录（token验证）
-- [x] 登出
-- [x] 收起侧边栏
 
----
+只启动 API 服务：
 
-![登录](https://i1.fuimg.com/711726/1fe76aba79dc6ac3.png)
+```bash
+pnpm dev:server
+```
 
-![welcome页面](https://i1.fuimg.com/711726/0746513933bbf916.png)
+构建：
 
-![收起侧边栏](https://i1.fuimg.com/711726/62719e0654133c67.png)
+```bash
+pnpm build
+```
 
-### 2.用户管理
-- [x] 用户列表
-- [x] 列表分页
-- [x] 添加用户
-- [x] 编辑用户
-- [x] 删除用户
-- [x] 分配角色
+类型检查：
 
----
-![用户列表](https://i1.fuimg.com/711726/7e891d33d8364716.png)
+```bash
+pnpm typecheck
+```
 
-![添加用户](https://i1.fuimg.com/711726/4b7607d15c5c099d.png)
+## 真实登录账号
 
-### 3.权限管理
-- [x] 角色列表
-- [ ] 添加角色（功能重复）
-- [ ] 删除角色（功能重复）
-- [x] 权限分配
-- [x] 权限列表
+当前已通过 Prisma seed 创建默认平台管理员账号：
 
----
-![角色列表](https://i1.fuimg.com/711726/f8b9b072102e37e8.png)
+```text
+账号：admin
+密码：123456
+```
 
-![分配权限](https://i1.fuimg.com/711726/9ca8488aee60dfab.png)
+初始化数据库并创建账号：
 
-![权限列表](https://i1.fuimg.com/711726/59cc964e32c8b2fd.png)
+```bash
+pnpm --filter @shop-saas/api-server db:init
+```
 
-### 4.商品管理
-- [x] 商品列表
-- [x] 添加商品
-- [x] 删除商品
-- [ ] 编辑商品
-- [x] 商品分页
-- [x] 分类参数
-- [x] 分类列表
-- [x] 添加分类
-- [ ] 编辑分类
-- [ ] 删除分类
+如果数据库结构已同步，只需要重新写入默认数据：
 
+```bash
+pnpm --filter @shop-saas/api-server prisma:seed
+```
 
----
-![商品列表](https://i1.fuimg.com/711726/46fa689dfe537843.png)
+本地开发时需要同时启动后端和前端：
 
-![添加商品](https://i1.fuimg.com/711726/58d357a91b86f28f.png)
+```bash
+pnpm dev:server
+pnpm dev:admin
+```
 
-![分类参数](https://i1.fuimg.com/711726/b3c5276435c6ce2d.png)
+## 文档
 
-![商品分类](https://i1.fuimg.com/711726/b717a442d69bf18d.png)
+- [使用手册](docs/usage-guide.md)
+- [升级需求文档](docs/requirements-upgrade.md)
+- [技术架构设计文档](docs/technical-architecture.md)
+- [多租户设计](docs/tenant-design.md)
+- [权限设计](docs/permission-design.md)
+- [API 设计](docs/api-design.md)
+- [数据库设计](docs/database-design.md)
 
-### 5.订单管理
-- [x] 订单列表
-- [x] 地址修改
-- [x] 物流进度
+## 当前阶段
 
----
-![订单列表](https://i1.fuimg.com/711726/17c622da1ccb3a28.png)
+第一阶段目标：
 
-![物流进度](https://i1.fuimg.com/711726/b8f3feaeeb92b73e.png)
-
-### 6.数据统计
-- [x] 数据报表
-
----
-![数据统计](https://i1.fuimg.com/711726/9abab6d201cfa144.png)
-
-
-
-
-
-
-
-
-
-
-
+- 建立 monorepo 基础工程
+- 搭建现代化 PC 管理后台基础界面
+- 搭建 NestJS API 服务骨架
+- 建立共享 types/constants/shared/api-client/auth/config 包
+- 后续补充数据库设计、权限设计、多租户设计和 API 设计

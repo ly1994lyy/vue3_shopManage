@@ -1,0 +1,18 @@
+{
+  "name": "@shop-saas/api-client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {
+    "@shop-saas/auth": "workspace:*",
+    "@shop-saas/types": "workspace:*",
+    "axios": "^1.7.9"
+  }
+}
