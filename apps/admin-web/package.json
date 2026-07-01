@@ -21,7 +21,7 @@
     "@vueup/vue-quill": "^1.5.5",
     "@vueuse/core": "^12.0.0",
     "axios": "^1.7.9",
-    "echarts": "^5.5.1",
+    "echarts": "^6.1.0",
     "naive-ui": "^2.40.3",
     "pinia": "^2.3.0",
     "quill": "^2.0.3",
